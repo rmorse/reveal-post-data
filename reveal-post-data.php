@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Reveal Post Data
- * Description:       Example block scaffolded with Create Block tool.
+ * Description:       Adds a button in the post sidebar to show the post data.
  * Requires at least: 6.1
  * Requires PHP:      7.0
  * Version:           0.1.0
