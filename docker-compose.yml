@@ -1,0 +1,113 @@
+version: "3.9"
+
+services:
+
+  # WordPress
+  ## PHP + Core
+  wordpress:
+    image: wordpress:latest
+    ## Wait to start until database server is started.
+    depends_on:
+      wpdb:
+        condition: service_healthy
+    volumes:
+      - ./wordpress_data:/var/www/html
+      ## Map ./plugin directory into the plugin directory
+      - ./:/var/www/html/wp-content/plugins/reveal-post-data
+      ## Map ./logs directory
+      - ./debug-log:/var/www/html/wp-content/logs
+    ports:
+      ## Port for WordPress
+      - "8502:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: wpdb:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      # This sets WP_DEBUG to true
+      ## See: https://github.com/docker-library/wordpress/blob/de0693c1828391a509da9ee662798cbd1417bbe1/beta/php7.4/fpm/wp-config-docker.php#L110
+      WORDPRESS_DEBUG: 1
+      WORDPRESS_CONFIG_EXTRA: |
+        /* WordPress logging, set path to root of plugin*/
+        define( 'WP_DEBUG_LOG', 'wp-content/logs/debug.log' );
+        define( 'WP_DEBUG_DISPLAY', true );
+        /* Other Constants */
+        define( 'SCRIPT_DEBUG', true );
+
+  ## Database for WordPress site
+  wpdb:
+    image: mariadb:10.5.8
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    healthcheck:
+      test: "/usr/bin/mysql --user=wordpress --password=wordpress --execute \"SHOW DATABASES;\""
+      # test: "/usr/local/mysql/bin/mysql --user=wordpress --password=wordpress --execute \"SHOW DATABASES;\""
+      interval: 3s
+      timeout: 1s
+      retries: 5
+  ## PHPmyadmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      wpdb:
+        condition: service_healthy
+    restart: always
+    ports:
+      - "8601:80"
+    links:
+      - wpdb
+    environment:
+      PMA_HOST: wpdb
+      PMA_PORT: 3306
+  ## WPCli for WordPress site
+  wpcli:
+    image: wordpress:cli
+    ## Wait to start until database server is started.
+    depends_on:
+      wpdb:
+        condition: service_healthy
+    volumes:
+      - wordpress_data:/var/www/html
+      ## Map this directory into the plugin directory
+      - ./:/var/www/html/wp-content/plugins/trustedlogin-vendor
+      - ./db:/var/www/html/db
+    environment:
+      WORDPRESS_DB_HOST: wpdb:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      ABSPATH: /usr/src/wordpress/
+
+  # Integration Testing - Tests that run in phpunit with WordPress + MySQL
+  ## Runner for phpunit
+  phpunit:
+    command:
+      - bash
+    ## Wait to start until the database server for testing is ready.
+    depends_on:
+      - testwpdb
+    environment:
+      DATABASE_PASSWORD: examplepass
+      DATABASE_HOST: testwpdb
+    image: futureys/phpunit-wordpress-plugin
+    stdin_open: true
+    tty: true
+    volumes:
+      ## Map src/plugin + tests directories into the test plugin directory
+      - ./plugin:/plugin
+      - ./tests:/plugin/tests
+  ## Database for testing
+  testwpdb:
+      environment:
+        MYSQL_ROOT_PASSWORD: examplepass
+      image: mariadb:10.5.8
+volumes:
+  db_data: {}
+  wordpress_data: {}
