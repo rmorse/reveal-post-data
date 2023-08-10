@@ -14,11 +14,7 @@
  */
 
 /**
- * Registers the block using the metadata loaded from the `block.json` file.
- * Behind the scenes, it registers also all assets so they can be enqueued
- * through the block editor in the corresponding context.
- *
- * @see https://developer.wordpress.org/reference/functions/register_block_type/
+ * Load admin JS + CSS files.
  */
 function reveal_post_data_init() {
 	// Register a script.
@@ -42,6 +38,10 @@ function reveal_post_data_init() {
 }
 add_action( 'admin_enqueue_scripts', 'reveal_post_data_init' );
 
+
+/**
+ * Add the rest api route for getting the post data.
+ */
 function reveal_post_data_add_routes() {
 	register_rest_route(
 		'reveal-post-data/v1',
@@ -65,10 +65,16 @@ function reveal_post_data_add_routes() {
 
 add_action( 'rest_api_init', 'reveal_post_data_add_routes' );
 
+/**
+ * Check if the user has the correct permissions.
+ */
 function reveal_post_data_rest_api_permissions() {
 	return current_user_can( 'manage_options' );
 }
 
+/**
+ * Get the post data.
+ */
 function reveal_post_data_get_post_data( WP_REST_Request $request ) {
 	$params = $request->get_params();
 	$id = $params['id'];
@@ -88,9 +94,9 @@ function reveal_post_data_get_post_data( WP_REST_Request $request ) {
 	}
 
 	$post_data = array(
-		'post' => $post,
+		'post'     => $post,
 		'taxonomy' => $taxonomies,
-		'meta' => get_post_meta( $id ),
+		'meta'     => get_post_meta( $id ),
 	);
 	return rest_ensure_response( $post_data );
 }

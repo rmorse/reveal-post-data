@@ -25,7 +25,6 @@ import { STORE_NAME } from './store';
 /**
  * Internal dependencies
  */
-console.log("Loaded scripts for reveal-post-data")
 
 registerPlugin( 'reveal-post-data-panel', {
 	render: () => {
@@ -86,7 +85,7 @@ registerPlugin( 'reveal-post-data-panel', {
 		)
 		
 	},
-	icon: 'airplane' // or false if you do not need an icon
+	icon: false,
 } );
 
 const PostTable = ( { data } ) => {

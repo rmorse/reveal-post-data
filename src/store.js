@@ -45,7 +45,6 @@ export const taxonomyStore = createReduxStore( STORE_NAME, {
 	actions,
 	selectors: {
 		getPostData( state, id ) {
-			console.log( 'store | getPostData | ', state );
 			return state.posts[ id ] ?? undefined;
 		},
 	},
@@ -58,8 +57,6 @@ export const taxonomyStore = createReduxStore( STORE_NAME, {
 		*getPostData( id ) {
 			const path = `/reveal-post-data/v1/post/${ id }`;
 			const post = yield getFromAPI( path );
-			console.log( 'store | *getPostData | ', post );
-
 			return actions.setPostData( id, post );
 		},
 	},
