@@ -7,4 +7,25 @@
 .reveal-post-data-modal {
 	min-width: 90vw;
 	min-height: 90vh;
+
+	table {
+		width: 100%;
+		min-height: 100%;
+		background-color: #eee;
+		padding: 12px;
+		margin-top: 6px;
+
+		th, td {
+			text-align: left;
+			padding: 6px;
+			border-bottom: 1px solid #ddd;
+			border-collapse: collapse;
+		}
+
+		tr:last-child {
+			td {
+				border-bottom: none;
+			}
+		}
+	}
 }

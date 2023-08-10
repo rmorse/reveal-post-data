@@ -8,6 +8,7 @@ import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 import { Button, Modal, TabPanel, __experimentalHStack as HStack } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { useSelect } from '@wordpress/data';
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -18,6 +19,9 @@ import { __ } from '@wordpress/i18n';
  */
 import './style.scss';
 
+// The store for handling the fetching of the post data.
+import { STORE_NAME } from './store';
+
 /**
  * Internal dependencies
  */
@@ -27,6 +31,11 @@ registerPlugin( 'reveal-post-data-panel', {
 	render: () => {
 		const [ isModalOpen, setIsModalOpen ] = useState( false );
 		const toggleModal = () => setIsModalOpen( ! isModalOpen );
+
+		const postData = useSelect( ( select ) => {
+			const { getPostData } = select( STORE_NAME );
+			return getPostData( select( 'core/editor' ).getCurrentPostId() );
+		} );
 		return (
 			<PluginDocumentSettingPanel
 				name="reveal-post-data-panel"
@@ -64,28 +73,12 @@ registerPlugin( 'reveal-post-data-panel', {
 							>
 								{ ( tab ) => (
 									<>
-										{ tab.name === 'post' && <PostTable /> }
-										{ tab.name === 'taxonomy' && <TaxonomyTable /> }
-										{ tab.name === 'meta' && <MetaTable /> }
+										{ tab.name === 'post' && <PostTable data={ postData.post } /> }
+										{ tab.name === 'taxonomy' && <TaxonomyTable data={ postData.taxonomy } /> }
+										{ tab.name === 'meta' && <MetaTable data={ postData.meta } /> }
 									</>
 								) }
 							</TabPanel>
-							<table>
-								<thead>
-									<tr>
-										<th>Key</th>
-										<th>Value</th>
-									</tr>
-								</thead>
-								<tbody>
-									{ Object.entries( wp.data.select( 'core/editor' ).getCurrentPost() ).map( ( [ key, value ] ) => (
-										<tr key={ key }>
-											<td>{ key }</td>
-											<td>{ JSON.stringify( value ) }</td>
-										</tr>
-									) ) }
-								</tbody>
-							</table>
 						</Modal>
 					) }
 				</HStack>
@@ -96,7 +89,7 @@ registerPlugin( 'reveal-post-data-panel', {
 	icon: 'airplane' // or false if you do not need an icon
 } );
 
-const PostTable = () => {
+const PostTable = ( { data } ) => {
 	return (
 		<table>
 			<thead>
@@ -106,7 +99,7 @@ const PostTable = () => {
 				</tr>
 			</thead>
 			<tbody>
-				{ Object.entries( wp.data.select( 'core/editor' ).getCurrentPost() ).map( ( [ key, value ] ) => (
+				{ Object.entries( data ).map( ( [ key, value ] ) => (
 					<tr key={ key }>
 						<td>{ key }</td>
 						<td>{ JSON.stringify( value ) }</td>
@@ -117,20 +110,20 @@ const PostTable = () => {
 	)
 }
 
-const TaxonomyTable = () => {
+const TaxonomyTable = ( { data } ) => {
 	return (
 		<table>
 			<thead>
 				<tr>
-					<th>Key</th>
-					<th>Value</th>
+					<th>Taxonomy</th>
+					<th>Terms</th>
 				</tr>
 			</thead>
 			<tbody>
-				{ Object.entries( wp.data.select( 'core/editor' ).getEditedPostAttribute( 'taxonomies' ) ).map( ( [ key, value ] ) => (
+				{ Object.entries( data ).map( ( [ key, object ] ) => (
 					<tr key={ key }>
-						<td>{ key }</td>
-						<td>{ JSON.stringify( value ) }</td>
+						<td>{ object.label }</td>
+						<td>{ object.terms.join( ',' ) }</td>
 					</tr>
 				) ) }
 			</tbody>
@@ -138,7 +131,7 @@ const TaxonomyTable = () => {
 	)
 }
 
-const MetaTable = () => {
+const MetaTable = ( { data } ) => {
 	return (
 		<table>
 			<thead>
@@ -148,7 +141,7 @@ const MetaTable = () => {
 				</tr>
 			</thead>
 			<tbody>
-				{ Object.entries( wp.data.select( 'core/editor' ).getEditedPostAttribute( 'meta' ) ).map( ( [ key, value ] ) => (
+				{ Object.entries( data ).map( ( [ key, value ] ) => (
 					<tr key={ key }>
 						<td>{ key }</td>
 						<td>{ JSON.stringify( value ) }</td>
