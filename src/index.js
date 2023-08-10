@@ -94,8 +94,8 @@ const PostTable = ( { data } ) => {
 		<table>
 			<thead>
 				<tr>
-					<th>Key</th>
-					<th>Value</th>
+					<th>{ __( 'Key', 'reveal-post-data' ) }</th>
+					<th>{ __( 'Value', 'reveal-post-data' ) }</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -115,8 +115,8 @@ const TaxonomyTable = ( { data } ) => {
 		<table>
 			<thead>
 				<tr>
-					<th>Taxonomy</th>
-					<th>Terms</th>
+					<th>{ __( 'Taxonomy', 'reveal-post-data' ) }</th>
+					<th>{ __( 'Terms', 'reveal-post-data' ) }</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -136,15 +136,21 @@ const MetaTable = ( { data } ) => {
 		<table>
 			<thead>
 				<tr>
-					<th>Key</th>
-					<th>Value</th>
+					<th>{ __( 'Key', 'reveal-post-data' ) }</th>
+					<th>{ __( 'Value', 'reveal-post-data' ) }</th>
 				</tr>
 			</thead>
 			<tbody>
-				{ Object.entries( data ).map( ( [ key, value ] ) => (
+				{ Object.entries( data ).map( ( [ key, arr ] ) => (
 					<tr key={ key }>
 						<td>{ key }</td>
-						<td>{ JSON.stringify( value ) }</td>
+						<td>{ arr.map( ( value ) => {
+							if ( typeof value === 'object' ) {
+								return <div>{ JSON.stringify( value ) }</div>;
+							}
+							return <div>{ value }</div>;
+						} ) }
+						</td>
 					</tr>
 				) ) }
 			</tbody>
