@@ -10,9 +10,9 @@ Adds a button in the editor sidebar to show the raw post data.
 
 == Description ==
 
+Adds a button in the editor sidebar to show the raw post data - useful for debugging.
 
 == Installation ==
-
 
 == Frequently Asked Questions ==
 
