@@ -1,1 +1,0 @@
-{"version":3,"file":"view.js","mappings":";;;;;AAAA;AACAA,OAAO,CAACC,GAAG,CAAE,yDAA0D,CAAC;AACxE,8B","sources":["webpack://reveal-post-data/./src/view.js"],"sourcesContent":["/* eslint-disable no-console */\nconsole.log( 'Hello World! (from create-block-reveal-post-data block)' );\n/* eslint-enable no-console */\n"],"names":["console","log"],"sourceRoot":""}
