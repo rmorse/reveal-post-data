@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Reveal Post Data
  * Description:       Adds a button in the editor sidebar to show the raw post data.
- * Requires at least: 6.1
+ * Requires at least: 6.4
  * Requires PHP:      7.0
  * Version:           0.1.1
  * Author:            Ross Morsali
