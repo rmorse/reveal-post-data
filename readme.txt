@@ -22,6 +22,9 @@ Checkout the [GitHub repo](https://github.com/rmorse/reveal-post-data) for more 
 
 == Changelog ==
 
+= 0.1.2 =
+- Update readme tested up to
+
 = 0.1.1 =
 - Prevent direct access to plugin file
 
