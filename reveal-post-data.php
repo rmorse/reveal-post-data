@@ -39,7 +39,7 @@ function reveal_post_data_init() {
 	);
 	wp_enqueue_style( 'reveal-post-data' );
 }
-add_action( 'admin_enqueue_scripts', 'reveal_post_data_init' );
+add_action( 'enqueue_block_editor_assets', 'reveal_post_data_init' );
 
 
 /**

@@ -10,9 +10,9 @@ Adds a button in the editor sidebar to show the raw post data.
 
 == Description ==
 
-Adds a button in the editor sidebar to show the raw post data - useful for debugging.
+Adds a button in the editor sidebar to show the raw post data including taxonomy and meta data - useful for debugging.
 
-Checkout the [GitHub repo](https://github.com/rmorse/reveal-post-data) for more information.
+[Official GitHub Repository](https://github.com/rmorse/reveal-post-data).
 
 == Installation ==
 
@@ -20,7 +20,14 @@ Checkout the [GitHub repo](https://github.com/rmorse/reveal-post-data) for more 
 
 == Screenshots ==
 
+1. The button in the editor sidebar.
+2. The post data displayed in a modal.
+
 == Changelog ==
+
+= 0.1.3
+- Load scrips using `enqueue_block_editor_assets` so JS is only loaded on pages with the editor.
+- Add screenshots
 
 = 0.1.2 =
 - Update readme tested up to
